@@ -1,4 +1,5 @@
 import os
+import hgtk
 from xml.etree import ElementTree as ET
 from bs4 import BeautifulSoup as BS
 
@@ -22,6 +23,11 @@ soup = BS(xmlString)
 tag = soup.find_all("text")
 
 for idx, element in enumerate(tag):
-    print("{} : {}".format(idx,element.text))
+    print("----{}----\n".format(idx))
+    for letter in element.text:
+        if hgtk.checker.is_hangul(letter):
+            print("{} -> {}".format(letter,hgtk.letter.decompose(letter)))
+        else:
+            print("{}".format(letter))
 
 print("Finished Parsing")
