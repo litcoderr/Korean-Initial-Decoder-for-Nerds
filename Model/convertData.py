@@ -1,15 +1,12 @@
 import os
 import hgtk
 from xml.etree import ElementTree as ET
-from bs4 import BeautifulSoup as BS
 
 raw_data_path = "./Data/kowiki-latest-pages-articles.xml"
-#raw_data_path = "./Data/small_sample.xml"
 original_data_path = "./Data/original.txt"
 initial_data_path = "./Data/initial.txt"
 
 ## Setup
-
 # Check for raw data path
 assert os.path.isfile(raw_data_path), "No Raw Data Found"
 # Check for converted data path. If not exist, make one
@@ -27,11 +24,11 @@ def saveText(text):
         for letter in text:
             if hgtk.checker.is_hangul(letter):
                 temp = hgtk.letter.decompose(letter)[0]
-                print(temp)
             else:
                 temp = letter
             initial_file.write(temp)
 
+print("start parsing")
 context = ET.iterparse(raw_data_path,events=("start","end"))
 
 for event, element in context:
@@ -48,3 +45,5 @@ for event, element in context:
             saveText(text)
             if text is None: continue
         root.clear()
+
+print("done parsing")
