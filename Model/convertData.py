@@ -1,32 +1,59 @@
 import os
 import hgtk
 from xml.etree import ElementTree as ET
+import json
 
 raw_data_path = "./Data/kowiki-latest-pages-articles.xml"
-original_data_path = "./Data/original.txt"
-initial_data_path = "./Data/initial.txt"
+original_data_path = "./Data/original"
+initial_data_path = "./Data/initial"
+config_data_path = "./Data/config.json"
+dataset_num = 1
+data_count = 1
 
 ## Setup
 # Check for raw data path
 assert os.path.isfile(raw_data_path), "No Raw Data Found"
-# Check for converted data path. If not exist, make one
-if not os.path.isfile(original_data_path):
-    converted_file = open(original_data_path,"w+")
-if not os.path.isfile(initial_data_path):
-    converted_file = open(initial_data_path,"w+")
+
+def update_config(datacount):
+    if os.path.isfile(config_data_path):
+        file = open(config_data_path, "r+")
+        data = json.load(file)
+    else:
+        file = open(config_data_path,"a")
+        data = {
+            "Dataset_Num": dataset_num,
+            "dataset-1": 0
+        }
+    data["dataset-{}".format(dataset_num)] = datacount
+    data["Dataset_Num"] = dataset_num
+    file.seek(0)
+    json.dump(data,file)
+    file.truncate()
+    file.close()
 
 def saveText(text):
-    original_file = open(original_data_path,"a")
-    initial_file = open(initial_data_path,"a")
+    global data_count
+    global dataset_num
+    original_file = open("{}-{}.csv".format(original_data_path,dataset_num),"a")
+    initial_file = open("{}-{}.csv".format(initial_data_path,dataset_num),"a")
 
     if not text == None:
-        original_file.write(text)
         for letter in text:
             if hgtk.checker.is_hangul(letter):
+                original_file.write("{}\n".format(letter))
                 temp = hgtk.letter.decompose(letter)[0]
+                initial_file.write("{}\n".format(temp))
+
+                data_count += 1
+                if data_count == 5000001:
+                    update_config(data_count-1)
+                    print("dataset-{} done".format(dataset_num))
+                    data_count = 1
+                    dataset_num += 1
+                    original_file = open("{}-{}.csv".format(original_data_path, dataset_num), "a")
+                    initial_file = open("{}-{}.csv".format(initial_data_path, dataset_num), "a")
             else:
-                temp = letter
-            initial_file.write(temp)
+                pass
 
 print("start parsing")
 context = ET.iterparse(raw_data_path,events=("start","end"))
