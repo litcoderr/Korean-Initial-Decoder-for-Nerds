@@ -5,7 +5,6 @@ import json
 
 raw_data_path = "./Data/kowiki-latest-pages-articles.xml"
 original_data_path = "./Data/original"
-initial_data_path = "./Data/initial"
 config_data_path = "./Data/config.json"
 dataset_num = 1
 data_count = 1
@@ -35,14 +34,11 @@ def saveText(text):
     global data_count
     global dataset_num
     original_file = open("{}-{}.csv".format(original_data_path,dataset_num),"a")
-    initial_file = open("{}-{}.csv".format(initial_data_path,dataset_num),"a")
 
     if not text == None:
         for letter in text:
             if hgtk.checker.is_hangul(letter):
                 original_file.write("{}\n".format(letter))
-                temp = hgtk.letter.decompose(letter)[0]
-                initial_file.write("{}\n".format(temp))
 
                 data_count += 1
                 if data_count == 5000001:
@@ -51,7 +47,6 @@ def saveText(text):
                     data_count = 1
                     dataset_num += 1
                     original_file = open("{}-{}.csv".format(original_data_path, dataset_num), "a")
-                    initial_file = open("{}-{}.csv".format(initial_data_path, dataset_num), "a")
             else:
                 pass
 
