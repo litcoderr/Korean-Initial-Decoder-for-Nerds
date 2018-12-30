@@ -1,4 +1,5 @@
 from torch.utils import data
+import torch
 import pandas as pd
 import hgtk
 import json
@@ -72,6 +73,11 @@ class Dataset(data.Dataset):
         vector = [0 for _ in range(len(self.all_korean_characters))]
         vector[index] = 1
         return vector
+
+    def onehot_to_korean(self,vec):
+        # vec is a torch vector
+        index = vec.max(0)[1]
+        return self.all_korean_characters[index]
 
     def letter_to_onehot(self,letter):
         letter = hgtk.letter.decompose(letter)

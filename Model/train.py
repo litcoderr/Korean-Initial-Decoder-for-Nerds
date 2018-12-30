@@ -2,6 +2,7 @@ from Model.model import InitialPrediction
 from Model.dataset import Dataset
 import torch
 import torch.nn as nn
+import os
 
 class Trainer():
     def __init__(self):
@@ -47,6 +48,10 @@ class Trainer():
                         loss.backward(retain_graph=True)
                         self.optimizer.step()
 
-                        print("Epoch[{}/{}], Step[{}\{}], Loss:{:.4f}".format(
-                            epoch,self.num_epochs,index,len(self.dataset),loss
-                        ))
+                if index % 100 == 0:
+                    print("Epoch[{}/{}], Step[{}\{}], Loss:{:.4f}".format(
+                        epoch, self.num_epochs, index, len(self.dataset), loss
+                    ))
+                    dir_path = os.path.dirname(os.path.realpath(__file__))
+                    dir_path = dir_path+"/trained/model.ckpt"
+                    torch.save(self.model.state_dict(), dir_path)
