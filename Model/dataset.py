@@ -1,4 +1,3 @@
-import torch
 from torch.utils import data
 import pandas as pd
 import hgtk
@@ -32,12 +31,10 @@ class Dataset(data.Dataset):
             self.original_file = self.load_file(self.original_header)
         # get letter of index
         character = self.original_file.at[which_index,"letter"]
-        print(character)
         # one hot encode
         letter = self.letter_to_onehot(character)
         # return
         return letter
-        pass
 
     def which_file(self,index):
         temp_file = 1
@@ -89,8 +86,3 @@ class Dataset(data.Dataset):
         for idx, char in enumerate(letter):
             result[idx] = self.korean_to_onehot(char)
         return result
-
-if __name__ == "__main__":
-    data = Dataset()
-    print(data.original_file)
-    print(data.__getitem__(5000000))
