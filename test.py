@@ -1,3 +1,4 @@
-from Model.train import trainer
+from Model.train import Trainer
 
-trainer = trainer()
+trainer = Trainer()
+trainer.train()

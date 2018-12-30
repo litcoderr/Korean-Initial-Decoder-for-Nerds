@@ -1,9 +1,8 @@
 import torch
 import torch.nn as nn
-from Model.dataset import Dataset
 
 class InitialPrediction(nn.Module):
-    def __init__(self, embed_size=26, hidden_size=26, num_classes=52):
+    def __init__(self, embed_size=26, hidden_size=26, num_classes=53):
         super(InitialPrediction,self).__init__()
         self.embed_size = embed_size
         self.hidden_size = hidden_size

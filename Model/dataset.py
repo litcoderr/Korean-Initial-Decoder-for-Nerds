@@ -2,11 +2,13 @@ from torch.utils import data
 import pandas as pd
 import hgtk
 import json
+import os
 
 class Dataset(data.Dataset):
     def __init__(self):
-        self.original_header = "./Data/original"
-        self.config_data_path = "./Data/config.json"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        self.original_header = dir_path+"/Data/original"
+        self.config_data_path = dir_path+"/Data/config.json"
 
         self.current_dataset = 1
 
@@ -14,7 +16,9 @@ class Dataset(data.Dataset):
         self.config_data = json.load(config_file)
         self.original_file = self.load_file(self.original_header)
 
-        self.all_korean_characters = self.get_korean_characters()
+        self.all_korean_characters = ['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ','ㄲ','ㄸ','ㅃ','ㅆ','ㅉ',
+                                      'ㅆ','ㄳ','ㄵ','ㄶ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅄ','ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ',
+                                      'ㅠ','ㅡ','ㅣ','ㅐ','ㅒ','ㅔ','ㅖ','ㅘ','ㅙ','ㅚ','ㅝ','ㅞ','ㅟ','ㅢ','N']
 
     def __len__(self):
         length = 0
@@ -55,17 +59,6 @@ class Dataset(data.Dataset):
     def load_file(self,header):
         temp = pd.read_csv(self.generate_file_name(header),header=None)
         temp.columns = ["letter"]
-        return temp
-
-    def get_korean_characters(self):
-        temp = []
-        for index in range(44032,50814):
-            temp_ch = chr(index)
-            temp_ch = hgtk.letter.decompose(temp_ch)
-            for letter in temp_ch:
-                if not letter in temp:
-                    temp.append(letter)
-        temp.append("N")
         return temp
 
     def korean_to_index(self,letter):
